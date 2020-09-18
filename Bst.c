@@ -50,58 +50,83 @@ Node* pred(Node* root){
     pred(root->right);
 }
 
-void delete(Node* root,int item) {
-
-    if(root == NULL)
+void delete(Node** root,int item) {
+    Node* temp_root = *root;
+    if(temp_root == NULL)
     {
         printf("Item not found\n");
         return;
     }
-    if(root->data < item)
+    if(temp_root->data < item)
     {
-        delete(root->right,item);
+        delete(&(*root)->right,item);
     }
-    else if(root->data > item)
+    else if(temp_root->data > item)
     {
-        delete(root->left,item);
+        delete(&(*root)->left,item);
     }
     else 
     {
-        if(root->left == NULL && root->right != NULL)
+        if(temp_root->left == NULL && temp_root->right != NULL)
         {
-            
-            if(root->parent->left == root)
-                root->parent->left = root->right;
+            if(temp_root->parent == NULL)
+            {
+                temp_root->data = temp_root->right->data;
+                Node* temp = temp_root->right;
+
+                temp_root->right = NULL;
+                free(temp);
+                return;
+            }
+            else if(temp_root->parent->left == temp_root)
+                temp_root->parent->left = temp_root->right;
             else
-                root->parent->right = root->right;
+                temp_root->parent->right = temp_root->right;
             
-            root->right->parent = root->parent;
-            free(root);
+            temp_root->right->parent = temp_root->parent;
+            free(temp_root);
         }
-        else if(root->right == NULL && root->left != NULL)
+        else if(temp_root->right == NULL && temp_root->left != NULL)
         {
-            
-            if(root->parent->left == root)
-                root->parent->left = root->left;
+            if(temp_root->parent == NULL)
+            {
+                temp_root->data = temp_root->left->data;
+                Node* temp = temp_root->left;
+                temp_root->left = NULL;
+                free(temp);
+
+                return;
+            }
+            else if(temp_root->parent->left == temp_root)
+                temp_root->parent->left = temp_root->left;
             else
-                root->parent->right = root->left;
+                temp_root->parent->right = temp_root->left;
             
-            root->left->parent = root->parent;
-            free(root);
+            temp_root->left->parent = temp_root->parent;
+            free(temp_root);
         }
-        else if(root->right == NULL && root->left == NULL)
+        else if(temp_root->right == NULL && temp_root->left == NULL)
         {
-            if(root->parent->left == root)
-                root->parent->left = NULL;
+            if(temp_root->parent == NULL)
+            {
+                *root = NULL;
+                free(temp_root);
+                return;
+            }
+            if(temp_root->parent->left == temp_root)
+                temp_root->parent->left = NULL;
             else
-                root->parent->right = NULL;
-            free(root);
+                temp_root->parent->right = NULL;
+            free(temp_root);
         }
         else
         {
-            Node* pre = pred(root->left);
-            pre->parent->right = pre->left;
-            root->data = pre->data;
+            Node* pre = pred(temp_root->left);
+            if(pre == temp_root->left)
+                pre->parent->left = pre->left;
+            else
+                pre->parent->right = pre->left;
+            temp_root->data = pre->data;
             free(pre);
         }
         return;
@@ -134,7 +159,12 @@ int main()
     scanf("%d",&a);
     do
     {
-        delete(root,a);
+        if(root == NULL)
+        {
+            printf("root is null");
+            break;
+        }
+        delete(&root,a);
         inOrder(root);
         scanf("%d",&a);
     }while(a != -1);
