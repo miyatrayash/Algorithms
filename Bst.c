@@ -50,6 +50,46 @@ Node* pred(Node* root){
     pred(root->right);
 }
 
+
+/*Node* Delete(Node* root,int item) {
+    if(root == NULL)
+    {
+        return root;
+    }
+
+    else if(root->data < item) root->left = Delete(root->left,item);
+    else if(root->data > item) root->right = Delete(root->right,item);
+    else
+    {
+        if(root->right == NULL && root->left == NULL)
+        {
+            free(root);
+            root = NULL;
+        }
+        else if(root->left = NULL)
+        {
+            Node* temp = root;
+            root = root->right;
+            free(temp);
+        }
+        
+        else if(root->right = NULL)
+        {
+            Node* temp = root;
+            root = root->left;
+            free(temp);
+        }
+        else {
+            Node* temp = pred(root->left);
+            root->data = temp->data;
+            root->left = Delete(root->left,temp->data);
+        }
+        return root;
+
+    }
+}*/
+
+
 void delete(Node** root,int item) {
     Node* temp_root = *root;
     if(temp_root == NULL)
