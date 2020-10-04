@@ -41,7 +41,7 @@ Node* FindSmallest()
 {
     Node* min = vertices[0];
     int i=0;
-    while(min->weight == 0 || min->weight == -1 || min->is_visited == 1)
+    while(min->weight == -1 || min->is_visited == 1)
     {
         i++;
         if(i == N)
@@ -50,6 +50,7 @@ Node* FindSmallest()
         }
         min = vertices[i];
     }
+
     for(;i<N;i++)
     {
         if(vertices[i]->weight > 0 && vertices[i]->is_visited == 0 &&  min->weight > vertices[i]->weight)
@@ -122,6 +123,7 @@ int main()
                 printf("Weight of the edge %d <-> %d must be 0",i,j);
                 exit(0);
             }
+
             else if(j !=i &&w == 0)
             {
                 printf("Weight of the edge %d <-> %d can not be 0",i,j);

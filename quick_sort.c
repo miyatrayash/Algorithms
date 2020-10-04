@@ -28,7 +28,7 @@ void quick_sort(int arr[],int start,int end){
             swap(arr,start,end);
         else
             break;
-        
+
     }
 
     if(lowerbound < upperbound)

@@ -50,8 +50,7 @@ void delete(int arr[], int N)
 
     while(p < N && arr[p] < max(arr[child1(p,N)],arr[child2(p,N)]))
     {
-        
-        
+         
         if(arr[child1(p,N)] >= arr[child2(p,N)])
         {
             swap(&arr[p] , &arr[child1(p,N)]);
