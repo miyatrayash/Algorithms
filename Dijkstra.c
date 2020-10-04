@@ -2,6 +2,7 @@
 #include<stdlib.h>
 
 typedef struct Node Node;
+
 typedef struct Edge 
 {
     Node* dest;

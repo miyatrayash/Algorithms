@@ -3,175 +3,75 @@
 
 typedef struct Node{
     int data;
-    struct Node* parent;
     struct Node* left;
     struct Node* right;
 }Node;
 
 
 void insert(Node** root,int item){
+
     if(*root == NULL)
     {
         Node* new_node = (Node*)malloc(sizeof(Node));
         new_node->data = item;
         new_node->left = NULL;
         new_node->right = NULL;
-        new_node->parent = NULL;
         *root = new_node;
         return;
     }
-    if((*root)->right == NULL && (*root)->data < item || (*root)->left == NULL && (*root)->data > item)
-    {
-        Node* new_node = (Node*)malloc(sizeof(Node));
-        new_node->data = item;
-        new_node->left = NULL;
-        new_node->right = NULL;
-        new_node->parent = *root;
 
-        if((*root)->data < item)
-            (*root)->right = new_node;
-        else
-            (*root)->left = new_node;
-        return;
-    }
-
+    
     if((*root)->data < item)
         insert(&(*root)->right,item);
     else
         insert(&(*root)->left,item);
-}
-
-Node* pred(Node* root){
-    if(root->right == NULL)
-    {
-        return root;
-    }
-
-    pred(root->right);
+    
+    
 }
 
 
-/*Node* Delete(Node* root,int item) {
-    if(root == NULL)
-    {
-        return root;
-    }
+Node* succ(Node* root)
+{
+    while(root->left != NULL) root = root->left;
+    return root;
+}
 
-    else if(root->data < item) root->left = Delete(root->left,item);
-    else if(root->data > item) root->right = Delete(root->right,item);
-    else
-    {
-        if(root->right == NULL && root->left == NULL)
-        {
+Node* Delete(Node *root, int data) {
+    if(root == NULL){
+        printf("Node %d is not found in the tree",data);
+        exit(0);
+    }
+    else if(data < root->data) root->left = Delete(root->left,data);
+    else if (data > root->data) root->right = Delete(root->right,data);
+
+    else {
+
+        if(root->left == NULL && root->right == NULL) { 
             free(root);
             root = NULL;
         }
-        else if(root->left = NULL)
-        {
-            Node* temp = root;
+
+        else if(root->left == NULL) {
+            Node *temp = root;
             root = root->right;
             free(temp);
         }
-        
-        else if(root->right = NULL)
-        {
-            Node* temp = root;
+        else if(root->right == NULL) {
+            Node *temp = root;
             root = root->left;
             free(temp);
         }
-        else {
-            Node* temp = pred(root->left);
+
+        else { 
+            struct Node *temp = succ(root->right);
             root->data = temp->data;
-            root->left = Delete(root->left,temp->data);
+            root->right = Delete(temp,temp->data);
         }
-        return root;
-
     }
-}*/
-
-
-void delete(Node** root,int item) {
-    Node* temp_root = *root;
-    if(temp_root == NULL)
-    {
-        printf("Item not found\n");
-        return;
-    }
-    if(temp_root->data < item)
-    {
-        delete(&(*root)->right,item);
-    }
-    else if(temp_root->data > item)
-    {
-        delete(&(*root)->left,item);
-    }
-    else 
-    {
-        if(temp_root->left == NULL && temp_root->right != NULL)
-        {
-            if(temp_root->parent == NULL)
-            {
-                temp_root->data = temp_root->right->data;
-                Node* temp = temp_root->right;
-
-                temp_root->right = NULL;
-                free(temp);
-                return;
-            }
-            else if(temp_root->parent->left == temp_root)
-                temp_root->parent->left = temp_root->right;
-            else
-                temp_root->parent->right = temp_root->right;
-            
-            temp_root->right->parent = temp_root->parent;
-            free(temp_root);
-        }
-        else if(temp_root->right == NULL && temp_root->left != NULL)
-        {
-            if(temp_root->parent == NULL)
-            {
-                temp_root->data = temp_root->left->data;
-                Node* temp = temp_root->left;
-                temp_root->left = NULL;
-                free(temp);
-
-                return;
-            }
-            else if(temp_root->parent->left == temp_root)
-                temp_root->parent->left = temp_root->left;
-            else
-                temp_root->parent->right = temp_root->left;
-            
-            temp_root->left->parent = temp_root->parent;
-            free(temp_root);
-        }
-        else if(temp_root->right == NULL && temp_root->left == NULL)
-        {
-            if(temp_root->parent == NULL)
-            {
-                *root = NULL;
-                free(temp_root);
-                return;
-            }
-            if(temp_root->parent->left == temp_root)
-                temp_root->parent->left = NULL;
-            else
-                temp_root->parent->right = NULL;
-            free(temp_root);
-        }
-        else
-        {
-            Node* pre = pred(temp_root->left);
-            if(pre == temp_root->left)
-                pre->parent->left = pre->left;
-            else
-                pre->parent->right = pre->left;
-            temp_root->data = pre->data;
-            free(pre);
-        }
-        return;
-    }
+    return root;
 }
+
+
 
 void inOrder(Node* root)
 {
@@ -183,30 +83,44 @@ void inOrder(Node* root)
     inOrder(root->right);
 }
 
+void preOrder(Node* root)
+{
+    if(root == NULL)
+        return;
+    
+    printf("%d ",root->data);
+    preOrder(root->left);
+    preOrder(root->right);
+
+}
+
+
 int main()
 {
-    int a=0;
+    int N=0,a;
     Node* root=NULL;
-    scanf("%d",&a);
-    do
+
+    scanf("%d",&N);
+    for(int i=0;i<N;i++)
     {
-        insert(&root,a);
         scanf("%d",&a);
-    }while(a != -1);
+        insert(&root,a);
+    }
 
-    inOrder(root);
-
-    scanf("%d",&a);
-    do
+    scanf("%d",&N);
+    for(int i=0;i<N;i++)
     {
         if(root == NULL)
         {
             printf("root is null");
             break;
         }
-        delete(&root,a);
-        inOrder(root);
         scanf("%d",&a);
-    }while(a != -1);
+       root = Delete(root,a);
+    }
+
+    inOrder(root);
+    printf("\n");
+    preOrder(root);
 
 }
